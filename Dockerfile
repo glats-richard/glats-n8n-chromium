@@ -2,14 +2,13 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Install Python + pip on Alpine, and fpdf2
-RUN apk update && \
-    apk add --no-cache python3 py3-pip && \
-    pip3 install --break-system-packages fpdf2 && \
-    rm -rf /var/cache/apk/*
+# Install pdfkit into n8n's node_modules
+RUN cd /usr/local/lib/node_modules/n8n && \
+    npm install pdfkit && \
+    npm cache clean --force
 
-# Allow Code node (Node.js) external modules if needed – harmless to keep
-ENV NODE_FUNCTION_ALLOW_EXTERNAL=fpdf2
-ENV NODE_FUNCTION_EXTERNAL_MODULES=fpdf2
+# Allow Code node to use external modules & built-ins
+ENV NODE_FUNCTION_ALLOW_EXTERNAL=pdfkit
+ENV NODE_FUNCTION_ALLOW_BUILTIN=*
 
 USER node
