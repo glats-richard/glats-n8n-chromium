@@ -2,26 +2,16 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Install Chromium + dependencies
-RUN apt-get update && \
-    apt-get install -y \
+# Install Chromium + minimal dependencies on Alpine
+RUN apk update && \
+    apk add --no-cache \
       chromium \
-      chromium-driver \
-      fonts-liberation \
-      libatk1.0-0 \
-      libatk-bridge2.0-0 \
-      libcups2 \
-      libatspi2.0-0 \
-      libxcomposite1 \
-      libxdamage1 \
-      libxrandr2 \
-      libgbm1 \
-      libpango-1.0-0 \
-      libasound2 \
-      libxshmfence1 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+      nss \
+      freetype \
+      harfbuzz \
+      ttf-freefont
 
-ENV CHROME_PATH=/usr/bin/chromium
+# Tell the HTML-to-PDF node where Chromium is
+ENV CHROME_PATH=/usr/bin/chromium-browser
 
 USER node
